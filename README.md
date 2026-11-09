@@ -2,6 +2,8 @@
 
 **Pila** (Filipino for *"line"* or *"queue"*) is a real-time queue system for health centers, barangay halls and government offices. People scan a QR code at the entrance, get a number on their phone, and wait anywhere instead of standing in line for hours. Their phone shows their place in line and alerts them when it's almost their turn.
 
+**Live demo: https://pila-5gjs.onrender.com** (free hosting: the first visit after a quiet spell takes ~30–60 seconds to wake up)
+
 > React 19 + TypeScript · Node.js + Express · PostgreSQL · Socket.IO · Vitest · GitHub Actions
 
 ![Pila landing page](docs/screenshots/landing.jpg)

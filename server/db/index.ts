@@ -27,6 +27,10 @@ function postgresDb(url: string): Db {
   const pool = new pg.Pool({
     connectionString: url,
     max: 10,
+    // Keep connections open between requests. A new TLS + password handshake with a hosted
+    // database costs several network round trips, which users would feel on every page.
+    idleTimeoutMillis: 5 * 60_000,
+    keepAlive: true,
     ssl: /sslmode=require|neon\.tech|supabase/.test(url) ? { rejectUnauthorized: false } : undefined,
   })
   return {

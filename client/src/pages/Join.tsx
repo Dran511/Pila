@@ -1,8 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import type { PublicSnapshot, TicketView } from '../../../shared/types'
+import type { TicketView } from '../../../shared/types'
 import { LiveDot, Logo, useDocumentTitle } from '../components/ui'
-import { api, ApiError, errorMessage } from '../lib/api'
+import { api, errorMessage } from '../lib/api'
 import { waitText } from '../lib/format'
 import { useLang } from '../lib/i18n'
 import { useOfficeQueue } from '../lib/socket'
@@ -15,8 +15,6 @@ export function Join() {
   const navigate = useNavigate()
   const { lang, setLang, t } = useLang()
   const live = useOfficeQueue(slug)
-  const [initial, setInitial] = useState<PublicSnapshot | null>(null)
-  const [notFound, setNotFound] = useState(false)
   const [existing, setExisting] = useState<TicketView | null>(null)
   const [serviceId, setServiceId] = useState<number | null>(null)
   const [name, setName] = useState('')
@@ -24,13 +22,10 @@ export function Join() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const snap = live.snapshot ?? initial
+  const snap = live.snapshot
   useDocumentTitle(snap ? `${snap.office.name} · Pila` : 'Pila')
 
   useEffect(() => {
-    api<PublicSnapshot>(`/public/offices/${encodeURIComponent(slug)}`)
-      .then(setInitial)
-      .catch((err) => err instanceof ApiError && err.status === 404 && setNotFound(true))
     // Already holding a ticket here? Offer to go back to it instead of taking a second number.
     let saved: string | null = null
     try {
@@ -77,7 +72,7 @@ export function Join() {
         <LangToggle lang={lang} setLang={setLang} />
       </header>
       <main className="public-main">
-        {notFound || live.error ? (
+        {live.error ? (
           <div className="card card-pad">
             <h1 style={{ fontSize: 20, marginBottom: 8 }}>🤔</h1>
             <p>{t.officeNotFound}</p>
