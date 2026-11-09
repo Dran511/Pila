@@ -1,0 +1,19 @@
+# One-click deploy on Render (render.com): New → Blueprint → pick this repo.
+# The app is a single web service: Express serves the API, the WebSocket and the built React app.
+services:
+  - type: web
+    name: pila
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      # Paste your Postgres connection string (e.g. from Neon's free tier) in the Render dashboard.
+      # Leave it unset to fall back to the embedded database, which resets on each deploy.
+      - key: DATABASE_URL
+        sync: false
